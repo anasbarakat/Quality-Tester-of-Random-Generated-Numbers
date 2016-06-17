@@ -5,7 +5,6 @@ from math import *
 import matplotlib.pyplot as plt
 import numpy as np
 
-"""
 fichier = open("/Users/anasbarakat/Documents/PAF-incertitudeRepo/data.txt", "r")
 #epsilon = fichier.read()[3:]
 
@@ -13,7 +12,7 @@ fichier.close()
 
 n = int(input("Entrée la longueur n : "))
 
-Algorithme 1  
+""" Algorithme 1  """
 def algo1(n):
     S_n = 0
     for i in range(n):
@@ -22,7 +21,7 @@ def algo1(n):
     P_value = erfc(s_obs/sqrt(2))
     return P_value
 
- Algorithme 2
+""" Algorithme 2 """
 def algo2(n, M):
     N = floor(n/M)
     pi = []
@@ -45,10 +44,10 @@ def circ(f):
     plt.pie(f, labels=name, autopct='%1.1f%%', startangle=90)
     plt.axis('equal')
     plt.show()
-circ(f)"""
+circ(f)
 
 
-""" Algorithme 3: Discrete Fourier Transform (Spectra) Test """
+""" Algorithme 6: Discrete Fourier Transform (Spectral) Test """
 
 epsilon1= [1,0,0,1,0,1,0,0,1,1]
 epsilon2= [1,1,0,0,1,0,0,1,0,0,0,0,1,1,1,1,1,1,0,1,1,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,
@@ -84,7 +83,7 @@ def P_value(n, epsilon):
     for k in range(len(M)):
         if (M[k]<T):
             N1 +=1
-    N1= N1-1
+    
     print("N1=", N1 )
     
     d= (N1-N0)/(sqrt(n*(0.95)*(0.05)/4))
@@ -101,7 +100,9 @@ def testDCTalgo(n, epsilon):
     else: 
         return "The sequence is RANDOM"
 
-print(testDCTalgo(10,epsilon))
+print(testDCTalgo(10,epsilon1))
+
+""" Algorithme 10: Linear Complexity Test """
 
 
     
