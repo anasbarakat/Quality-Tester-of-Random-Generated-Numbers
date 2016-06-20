@@ -45,6 +45,116 @@ def algo2(n, M, e):
     
 #a = algo2(100, 10, "1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000") fournit des erreurs d'approximations sur les fractions
 
+""" Algorithme 6: Discrete Fourier Transform (Spectral) Test """
+
+epsilon1= [1,0,0,1,0,1,0,0,1,1]
+epsilon2= [1,1,0,0,1,0,0,1,0,0,0,0,1,1,1,1,1,1,0,1,1,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,
+           1,0,1,1,0,1,0,0,0,1,1,0,0,0,0,1,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1,0,0,1,1,0,0,0,1,1,0,0,1,1,0,0,0,1,0,1,0,0,0,1,0,1,1,1,0,0,0]
+
+def epsilonToX(n, epsilon):
+    X = []
+    for i in range(n):
+        X += [2*int(epsilon[i])-1]
+    print(X)
+    return X
+        
+def DFT(n,X):
+    
+    S= np.fft.fft(X)
+    Sbis= S[:int(n/2)]
+    print("Sbis=", Sbis)
+    Mod=[]
+    
+    for k in range(len(Sbis)):
+        Mod += [abs(Sbis[k])]
+    return Mod
+        
+def P_value(n, epsilon):
+    T= sqrt(log(1/0.05)*n)
+    print("T=", T)
+    N0=0.95*n/2
+    print("N0=", N0)
+    N1=0    
+    M= DFT(n,epsilonToX(n, epsilon))
+    print("M=", M)
+    
+    for k in range(len(M)):
+        if (M[k]<T):
+            N1 +=1
+    
+    print("N1=", N1 )
+    
+    d= (N1-N0)/(sqrt(n*(0.95)*(0.05)/4))
+    print("d=", d)
+    P_value= erfc(abs(d)/sqrt(2))
+    print("P_value=", P_value)
+
+    return P_value
+    
+def testDCTalgo(n, epsilon):
+    Pvalue= P_value(n, epsilon)
+    if (Pvalue < 0.01):
+        return "The sequence is NON-RANDOM"
+    else: 
+        return "The sequence is RANDOM"
+
+print(testDCTalgo(10,epsilon1))
+
+
+""" Algorithme 10: Linear Complexity Test """
+
+def berkelamp_massey(tab, M):
+    b = [1] +[0]*(M-1)
+    c = [1] +[0]*(M-1)
+    t = []
+    l = 0
+    m = -1
+    for n in range(M):
+        d = 0
+        for i in range(l+1):
+            d ^= c[i] * int(tab[n - i])
+        if (d==1):
+            t = c[:] 
+            M_N = n - m
+            for j in range(M - M_N):
+                c[M_N +j] ^= b[j]
+            if(l <= n/2):
+                l = n + 1 - l
+                m = n
+                b = t[:]
+    return l
+      
+    
+def algo10(n,M, e):
+    mu = (M/2 + 10/36 - (M/3+2/9)/2**M) if M % 2 == 1 else (M/2 + 8/36 - (M/3+2/9)/2**M)
+    T = 0
+    N = int ( n/M)
+    v = [0,0,0,0,0,0,0]
+    for i in range(n-M):
+        L = berkelamp_massey(e[i:i+M], M)
+        T = -(L-mu)+2/9 if M % 2 == 1 else (L-mu)+2/9
+        if (T <= -2.5):
+            v[0]+= 1
+        elif(T<=-1.5):
+            v[1]+= 1
+        elif(T<=-0.5):
+            v[2]+= 1
+        elif(T<=0.5):
+            v[3]+= 1
+        elif(T<=1.5):
+            v[4]+= 1
+        elif(T<=2.5):
+            v[5]+= 1
+        else:
+            v[6]+= 1
+    ki_carre = sum([(v[0]-N*0.010417)**2/(N*0.010417),(v[1]-N*0.03125)**2/(N*0.03125),(v[2]-N*0.125)**2/(N*0.125),  
+                    (v[3]-N*0.5)**2/(N*0.5),(v[4]-N*0.25)**2/(N*0.25),(v[5]-N*0.0625)**2/(N*0.0625), (v[6]-N*0.020833)**2/(N*0.020833)])
+    P_value = P_value = sp.special.gammaincc(3, ki_carre/2)
+    return P_value
+            
+        
+        
+    
 
 ## Histogramme des P_values
 
@@ -139,62 +249,6 @@ lbl1.pack()
  
 
 
-""" Algorithme 6: Discrete Fourier Transform (Spectral) Test """
-
-epsilon1= [1,0,0,1,0,1,0,0,1,1]
-epsilon2= [1,1,0,0,1,0,0,1,0,0,0,0,1,1,1,1,1,1,0,1,1,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,
-           1,0,1,1,0,1,0,0,0,1,1,0,0,0,0,1,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1,0,0,1,1,0,0,0,1,1,0,0,1,1,0,0,0,1,0,1,0,0,0,1,0,1,1,1,0,0,0]
-
-def epsilonToX(n, epsilon):
-    X = []
-    for i in range(n):
-        X += [2*int(epsilon[i])-1]
-    print(X)
-    return X
-        
-def DFT(n,X):
-    
-    S= np.fft.fft(X)
-    Sbis= S[:int(n/2)]
-    print("Sbis=", Sbis)
-    Mod=[]
-    
-    for k in range(len(Sbis)):
-        Mod += [abs(Sbis[k])]
-    return Mod
-        
-def P_value(n, epsilon):
-    T= sqrt(log(1/0.05)*n)
-    print("T=", T)
-    N0=0.95*n/2
-    print("N0=", N0)
-    N1=0    
-    M= DFT(n,epsilonToX(n, epsilon))
-    print("M=", M)
-    
-    for k in range(len(M)):
-        if (M[k]<T):
-            N1 +=1
-    
-    print("N1=", N1 )
-    
-    d= (N1-N0)/(sqrt(n*(0.95)*(0.05)/4))
-    print("d=", d)
-    P_value= erfc(abs(d)/sqrt(2))
-    print("P_value=", P_value)
-
-    return P_value
-    
-def testDCTalgo(n, epsilon):
-    Pvalue= P_value(n, epsilon)
-    if (Pvalue < 0.01):
-        return "The sequence is NON-RANDOM"
-    else: 
-        return "The sequence is RANDOM"
-
-print(testDCTalgo(10,epsilon1))
-
-""" Algorithme 10: Linear Complexity Test """
 
 
     

@@ -17,7 +17,7 @@ fenetre.title('Sure or not Sure That is the Question?')
 """Lignes de saisies"""
 
 Label1 = Label(fenetre, text = 'Input Data File :')
-Label1.pack(side=LEFT, padx=5, pady=5)
+Label1.pack(side = LEFT, padx=5, pady=5)
 File= StringVar()
 Champ1 = Entry(fenetre, textvariable= File, bg ='bisque', fg='maroon')
 Champ1.focus_set(side=LEFT, padx=5, pady=5)
