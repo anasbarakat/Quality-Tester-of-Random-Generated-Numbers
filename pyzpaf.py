@@ -10,13 +10,15 @@ from itertools import groupby
 from tkinter import *
 from tkinter.messagebox import *
 
-fichier = open("C:/Users/Azoulay/Downloads/paf.txt", "r")
-epsilon = fichier.read()[3:]
+fichier = open("/Users/anasbarakat/Documents/PAF-incertitudeRepo/data.txt", "r")
+#epsilon = fichier.read()[3:]
+
 fichier.close()
 
 #n = int(input("Entrée la longueur n : "))
 
 ## Implémentations de Algorithmes
+
 
 """    Algorithme 1  """
 def algo1(n, e):
@@ -26,6 +28,7 @@ def algo1(n, e):
     s_obs = abs(S_n)/sqrt(n)
     P_value = erfc(s_obs/sqrt(2))
     return P_value
+
 
 """ Algorithme 2"""
 def algo2(n, M, e):
@@ -43,9 +46,10 @@ def algo2(n, M, e):
 #a = algo2(100, 10, "1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000") fournit des erreurs d'approximations sur les fractions
 
 
-
 ## Histogramme des P_values
+
 f = [algo1(i,epsilon) for i in range(1000,5000)]##1004882
+
 def hist(f):
     frequence, lim, patches = plt.hist(f, range = (0, 1), bins = 10)
     plt.xlabel('Valeurs de P_value')
@@ -60,6 +64,7 @@ def circ(f):
     plt.pie(frequence, labels=name, autopct='%1.1f%%', startangle=90)
     plt.title('Camembert des P_values')
     plt.show()
+
 
 ## Courbe de répartition des P_values
 def curve(f):
@@ -132,4 +137,92 @@ b1.pack()
 lbl1 = Label()
 lbl1.pack()
  
+
+
+""" Algorithme 6: Discrete Fourier Transform (Spectral) Test """
+
+epsilon1= [1,0,0,1,0,1,0,0,1,1]
+epsilon2= [1,1,0,0,1,0,0,1,0,0,0,0,1,1,1,1,1,1,0,1,1,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,
+           1,0,1,1,0,1,0,0,0,1,1,0,0,0,0,1,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1,0,0,1,1,0,0,0,1,1,0,0,1,1,0,0,0,1,0,1,0,0,0,1,0,1,1,1,0,0,0]
+
+def epsilonToX(n, epsilon):
+    X = []
+    for i in range(n):
+        X += [2*int(epsilon[i])-1]
+    print(X)
+    return X
+        
+def DFT(n,X):
+    
+    S= np.fft.fft(X)
+    Sbis= S[:int(n/2)]
+    print("Sbis=", Sbis)
+    Mod=[]
+    
+    for k in range(len(Sbis)):
+        Mod += [abs(Sbis[k])]
+    return Mod
+        
+def P_value(n, epsilon):
+    T= sqrt(log(1/0.05)*n)
+    print("T=", T)
+    N0=0.95*n/2
+    print("N0=", N0)
+    N1=0    
+    M= DFT(n,epsilonToX(n, epsilon))
+    print("M=", M)
+    
+    for k in range(len(M)):
+        if (M[k]<T):
+            N1 +=1
+    
+    print("N1=", N1 )
+    
+    d= (N1-N0)/(sqrt(n*(0.95)*(0.05)/4))
+    print("d=", d)
+    P_value= erfc(abs(d)/sqrt(2))
+    print("P_value=", P_value)
+
+    return P_value
+    
+def testDCTalgo(n, epsilon):
+    Pvalue= P_value(n, epsilon)
+    if (Pvalue < 0.01):
+        return "The sequence is NON-RANDOM"
+    else: 
+        return "The sequence is RANDOM"
+
+print(testDCTalgo(10,epsilon1))
+
+""" Algorithme 10: Linear Complexity Test """
+
+
+    
+    
+
+
+        
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> f900548f5d4cb19af25f478d2b22241c9ab81eca
 
