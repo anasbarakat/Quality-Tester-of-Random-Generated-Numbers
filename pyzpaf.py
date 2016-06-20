@@ -10,8 +10,8 @@ from itertools import groupby
 from tkinter import *
 from tkinter.messagebox import *
 
-fichier = open("/Users/anasbarakat/Documents/PAF-incertitudeRepo/data.txt", "r")
-#epsilon = fichier.read()[3:]
+fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
+epsilon = fichier.read()[3:]
 
 fichier.close()
 
@@ -98,7 +98,7 @@ def testDCTalgo(n, epsilon):
     else: 
         return "The sequence is RANDOM"
 
-print(testDCTalgo(10,epsilon1))
+#print(testDCTalgo(10,epsilon1))
 
 
 """ Algorithme 10: Linear Complexity Test """
@@ -128,9 +128,9 @@ def berkelamp_massey(tab, M):
 def algo10(n,M, e):
     mu = (M/2 + 10/36 - (M/3+2/9)/2**M) if M % 2 == 1 else (M/2 + 8/36 - (M/3+2/9)/2**M)
     T = 0
-    N = int ( n/M)
+    N = int (n/M)
     v = [0,0,0,0,0,0,0]
-    for i in range(n-M):
+    for i in range(0,n-M,M):
         L = berkelamp_massey(e[i:i+M], M)
         T = -(L-mu)+2/9 if M % 2 == 1 else (L-mu)+2/9
         if (T <= -2.5):
@@ -152,13 +152,13 @@ def algo10(n,M, e):
     P_value = P_value = sp.special.gammaincc(3, ki_carre/2)
     return P_value
             
+#a = algo10(1000000,1000, epsilon[:1000000])        
         
-        
-    
+
 
 ## Histogramme des P_values
 
-f = [algo1(i,epsilon) for i in range(1000,5000)]##1004882
+#f = [algo1(i,epsilon) for i in range(1000,5000)]##1004882
 
 def hist(f):
     frequence, lim, patches = plt.hist(f, range = (0, 1), bins = 10)
@@ -186,97 +186,4 @@ def curve(f):
     plt.ylabel('Fréquence comptée')
     plt.title('Courbe des P_values')
     plt.show()		
-
-##Interface Graphique
-fenetre = Tk()
-fenetre.title('Sure or not Sure That is the Question?')
-
-"""Lignes de saisies"""
-
-Label1 = Label(fenetre, text = 'Input Data File :')
-Label1.pack(side = LEFT, padx = 5, pady = 5)
-File= StringVar()
-Champ1 = Entry(fenetre, textvariable= File, bg ='bisque', fg='maroon')
-Champ1.focus_set()
-Champ1.pack(side = LEFT, padx = 5, pady = 5)
-
-
-Label2 = Label(fenetre, text = 'BitStream length :')
-Label2.pack(side = LEFT, padx = 5, pady = 5)
-bsl= StringVar()
-Champ2 = Entry(fenetre, textvariable= bsl, bg ='bisque', fg='maroon')
-Champ2.focus_set()
-Champ2.pack(side = LEFT, padx = 5, pady = 5)
-
-
-Label3 = Label(fenetre, text = 'Number of Bitestream :')
-Label3.pack(side = LEFT, padx = 5, pady = 5)
-bsl= StringVar()
-Champ3 = Entry(fenetre, textvariable= bsl, bg ='bisque', fg='maroon')
-Champ3.focus_set()
-Champ3.pack(side = LEFT, padx = 5, pady = 5)
-
-
-Label4 = Label(fenetre, text = 'Number of Block :')
-Label4.pack(side = LEFT, padx = 5, pady = 5)
-nob= StringVar()
-Champ4 = Entry(fenetre, textvariable= nob, bg ='bisque', fg='maroon')
-Champ4.focus_set()
-Champ4.pack(side = LEFT, padx = 5, pady = 5)
-
-
-fenetre.mainloop()
- 
- 
-def Executer():
-    a = float(e1.get())
-    b = float(e2.get())
-    c = float(e3.get())
-    result = a+(a*b/c)/100
-    lbl1.config(text = 'result '+str(result))
- 
-root = Tk()
-e1 = Entry()
-e2 = Entry()
-e3 = Entry()
-e1.pack()
-e2.pack()
-e3.pack()
-b1 = Button(text='Lancer', command=Executer)
-b1.pack()
-lbl1 = Label()
-lbl1.pack()
- 
-
-
-
-
-    
-    
-
-
-        
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> f900548f5d4cb19af25f478d2b22241c9ab81eca
 
