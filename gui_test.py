@@ -16,27 +16,31 @@ from pyzpaf import *
 
 fenetre = Tk()
 fenetre.title('Sure or not Sure That is the Question?')
+fenetre.geometry('10000x10000')
 
-#Ajout d'un Background
-photo = PhotoImage(file="C:/Users/Azoulay/Desktop/PAF-incertitude/de.gif")
+
+"""
+Ajout d'un Background
+photo = PhotoImage(file="Users/anasbarakat/Documents/PAF-incertitudeRepo/de.gif")
 canvas = Canvas(fenetre,width=1, height=1)
 canvas.pack(fill=BOTH, expand=1)
 canvas.create_image(0, 0,  image=photo, anchor=NW)
-fenetre.geometry('381x307')
+fenetre.geometry('381x307')"""
 
 
 """ Lignes de saisies  """
 
 Label1 = Label(fenetre, text = 'Input Data File :')
-Label1.pack(side = LEFT, padx = 10, pady = 10)
+Label1.pack(side = LEFT, padx = 5, pady = 5)
 File= StringVar()
 Champ1 = Entry(fenetre, textvariable= File, bg ='bisque', fg='maroon')
 Champ1.focus_set()
-Champ1.pack(side = LEFT, padx = 10, pady = 10)
+Champ1.pack(side = LEFT, padx = 5, pady = 5)
+Champ1.place(x=10, y=10)
 
 
 Label2 = Label(fenetre, text = 'BitStream length :')
-Label2.pack( side = LEFT,padx = 10, pady = 10)
+Label2.pack( side = LEFT,padx = 5, pady = 5)
 bsl= StringVar()
 Champ2 = Entry(fenetre, textvariable= bsl, bg ='bisque', fg='maroon')
 Champ2.focus_set()
@@ -81,6 +85,34 @@ bouton3 = Radiobutton(fenetre, text="Courbe", variable=value, value=3)
 bouton1.pack()
 bouton2.pack()
 bouton3.pack()
+
+
+cadre = Frame(fenetre, width=768, height=576, borderwidth=1)
+cadre.pack(fill=BOTH)
+
+message = Label(cadre, text="Notre fenêtre")
+message.pack(side="top", fill=X)
+
+#organisation en frames 
+fenetre['bg']='white'
+
+# frame 1
+Frame1 = Frame(fenetre, borderwidth=2, relief=GROOVE)
+Frame1.pack(side=LEFT, padx=30, pady=30)
+
+# frame 2
+Frame2 = Frame(fenetre, borderwidth=2, relief=GROOVE)
+Frame2.pack(side=LEFT, padx=10, pady=10)
+
+# frame 3 dans frame 2
+Frame3 = Frame(Frame2, bg="white", borderwidth=2, relief=GROOVE)
+Frame3.pack(side=RIGHT, padx=5, pady=5)
+
+# Ajout de labels
+Label(Frame1, text="Frame 1").pack(padx=10, pady=10)
+Label(Frame2, text="Frame 2").pack(padx=10, pady=10)
+Label(Frame3, text="Frame 3",bg="white").pack(padx=10, pady=10)
+
 
 
 #Bouton pour lancer le Programme

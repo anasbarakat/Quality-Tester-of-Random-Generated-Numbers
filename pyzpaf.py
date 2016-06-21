@@ -10,7 +10,7 @@ from itertools import groupby
 from tkinter import *
 from tkinter.messagebox import *
 
-fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
+fichier = open("/Users/anasbarakat/Documents/PAF-incertitudeRepo/data.txt", "r")
 epsilon = fichier.read()[3:]
 
 fichier.close()
@@ -168,7 +168,7 @@ def linearComplexityTest(n,M, e):
 
 ## Histogramme des P_values
 
-f = [algo1(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]##1004882
+f = [frequencyTest(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]##1004882
 
 def hist(f):
     frequence, lim, patches = plt.hist(f, range = (0, 1), bins = 10)
