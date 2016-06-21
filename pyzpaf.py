@@ -168,7 +168,7 @@ def linearComplexityTest(n,M, e):
 
 ## Histogramme des P_values
 
-#f = [algo1(i,epsilon) for i in range(1000,5000)]##1004882
+f = [algo1(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]##1004882
 
 def hist(f):
     frequence, lim, patches = plt.hist(f, range = (0, 1), bins = 10)
@@ -197,3 +197,11 @@ def curve(f):
     plt.title('Courbe des P_values')
     plt.show()		
 
+## Pourcentage des Tests Réussis
+def percent(f):
+    n = len(f)
+    s = 0
+    for i in range(n):
+        if(f[i]>0.01):
+            s +=1
+    0.01
