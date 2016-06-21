@@ -59,7 +59,7 @@ def epsilonToX(n, epsilon): # epsilon séquence, n longueur de la séquence
     X = []
     for i in range(n):
         X += [2*int(epsilon[i])-1]
-    print(X)
+    #print(X)
     return X
     
  # calcul de la transformée de Fourier discrète et module       
@@ -67,7 +67,7 @@ def DFT(n,X):
     
     S= np.fft.fft(X)
     Sbis= S[:int(n/2)]
-    print("Sbis=", Sbis)
+    #print("Sbis=", Sbis)
     Mod=[]
     
     for k in range(len(Sbis)):
@@ -77,24 +77,24 @@ def DFT(n,X):
 # calcul de P_value       
 def P_value(n, epsilon):
     T= sqrt(log(1/0.05)*n) # valeur du seuil de décision sur le module 
-    print("T=", T)
+   # print("T=", T)
     N0=0.95*n/2  # valeur de référence (au seuil de 95%) 
     # pour le nombre de pics du module de la TFD 
-    print("N0=", N0)
+   # print("N0=", N0)
     N1=0    
     M= DFT(n,epsilonToX(n, epsilon))
-    print("M=", M)
+   # print("M=", M)
     
     for k in range(len(M)): # pour le calcul du nombre de modules < T 
         if (M[k]<T):
             N1 +=1
     
-    print("N1=", N1 )
+   # print("N1=", N1 )
     
     d= (N1-N0)/(sqrt(n*(0.95)*(0.05)/4))
-    print("d=", d)
+   # print("d=", d)
     P_value= erfc(abs(d)/sqrt(2))
-    print("P_value=", P_value)
+   # print("P_value=", P_value)
 
     return P_value
  
