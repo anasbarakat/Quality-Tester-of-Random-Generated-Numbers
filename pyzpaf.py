@@ -158,7 +158,7 @@ def algo10(n,M, e):
 
 ## Histogramme des P_values
 
-f = [algo1(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]##1004882
+#f = [algo1(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]##1004882
 
 def hist(f):
     frequence, lim, patches = plt.hist(f, range = (0, 1), bins = 10)
@@ -194,4 +194,4 @@ def percent(f):
     for i in range(n):
         if(f[i]>0.01):
             s +=1
-    0.01
+    return s/n

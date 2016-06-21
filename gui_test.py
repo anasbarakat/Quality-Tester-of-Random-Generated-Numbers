@@ -60,7 +60,7 @@ Champ4.pack(side = LEFT, padx = 10, pady = 10)
 
 
 Label5 = Label(fenetre)
-Label5.pack(side = BOTTOM, padx = 10, pady = 10)
+Label5.pack(side = LEFT, padx = 10, pady = 10)
 
 # Radiobutton pour le choix de L'algorithme
 val = StringVar() 
@@ -89,9 +89,16 @@ def Lancer():
     algo = int(val.get())
     file = str(Champ1.get())
     BitStream_Length = int(Champ2.get())
-    
-    
-    Label5.config(text = 'Result : ' + pourcentage + ' %')    
+    Nb_of_BitStream = int(Champ3.get())
+    Nb_of_Block = int(Champ2.get())
+    if(algo == 1):
+        f = [algo1(BitStream_Length,epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)]
+        
+    if(type_graphe == 1):
+        hist(f)
+    p = percent(f)*100
+    Label5.config(text = 'Result :\n Proportion = ' + str(p)  + ' %')    
+
 
 bouton_lancer = Button(fenetre, text='Lancer', command=Lancer)
 bouton_lancer.pack(side = BOTTOM, padx = 5, pady = 5)
