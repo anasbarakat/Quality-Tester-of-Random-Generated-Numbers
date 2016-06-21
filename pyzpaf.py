@@ -17,28 +17,30 @@ fichier.close()
 
 #n = int(input("Entrée la longueur n : "))
 
-## Implémentations de Algorithmes
+## Implémentations des Algorithmes
 
 
-"""    Algorithme 1  """
-def algo1(n, e):
+"""    Algorithme 1 : Frequency (Monobit) Test  """
+def frequencyTest(n, e):# n longueur de la séquence, e séquence de bits
     S_n = 0
     for i in range(n):
-        S_n += 2*int(e[i])-1
+        S_n += 2*int(e[i])-1   # calcul du nombre de 1 en plus que de 0 
     s_obs = abs(S_n)/sqrt(n)
     P_value = erfc(s_obs/sqrt(2))
     return P_value
 
 
-""" Algorithme 2"""
-def algo2(n, M, e):
-    N = floor(n/M)
+""" Algorithme 2: Frequency Test within a Block"""
+
+def frequencyTestBlock(n, M, e): # n longueur de la séquence, M taille d'un block, 
+# e séquence de bits
+    N = floor(n/M) 
     pi = np.array([], dtype='f')
     for i in range(0,n-M,M):
         s=0
         for j in range(M):
             s += int(e[j+i])/M 
-        pi = np.append(pi, s)
+        pi = np.append(pi, s) # vecteur des proportions de 1 dans chaque bloc 
     ki_carre = 4*M*sum((pi-0.5)**2)
     P_value = sp.special.gammaincc(N/2, ki_carre/2)
     return P_value
@@ -51,14 +53,17 @@ epsilon1= [1,0,0,1,0,1,0,0,1,1]
 epsilon2= [1,1,0,0,1,0,0,1,0,0,0,0,1,1,1,1,1,1,0,1,1,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,
            1,0,1,1,0,1,0,0,0,1,1,0,0,0,0,1,0,0,0,1,1,0,1,0,0,1,1,0,0,0,1,0,0,1,1,0,0,0,1,1,0,0,1,1,0,0,0,1,0,1,0,0,0,1,0,1,1,1,0,0,0]
 
-def epsilonToX(n, epsilon):
+#conversion des 0 en -1 
+def epsilonToX(n, epsilon): # epsilon séquence, n longueur de la séquence
+    
     X = []
     for i in range(n):
         X += [2*int(epsilon[i])-1]
     print(X)
     return X
-        
-def DFT(n,X):
+    
+ # calcul de la transformée de Fourier discrète et module       
+def DFT(n,X):  
     
     S= np.fft.fft(X)
     Sbis= S[:int(n/2)]
@@ -68,17 +73,19 @@ def DFT(n,X):
     for k in range(len(Sbis)):
         Mod += [abs(Sbis[k])]
     return Mod
-        
+
+# calcul de P_value       
 def P_value(n, epsilon):
-    T= sqrt(log(1/0.05)*n)
+    T= sqrt(log(1/0.05)*n) # valeur du seuil de décision sur le module 
     print("T=", T)
-    N0=0.95*n/2
+    N0=0.95*n/2  # valeur de référence (au seuil de 95%) 
+    # pour le nombre de pics du module de la TFD 
     print("N0=", N0)
     N1=0    
     M= DFT(n,epsilonToX(n, epsilon))
     print("M=", M)
     
-    for k in range(len(M)):
+    for k in range(len(M)): # pour le calcul du nombre de modules < T 
         if (M[k]<T):
             N1 +=1
     
@@ -90,8 +97,9 @@ def P_value(n, epsilon):
     print("P_value=", P_value)
 
     return P_value
-    
-def testDCTalgo(n, epsilon):
+ 
+# randomness test   
+def testDCT(n, epsilon):  
     Pvalue= P_value(n, epsilon)
     if (Pvalue < 0.01):
         return "The sequence is NON-RANDOM"
@@ -103,7 +111,9 @@ def testDCTalgo(n, epsilon):
 
 """ Algorithme 10: Linear Complexity Test """
 
-def berkelamp_massey(tab, M):
+# algorithme pour la détermination
+#  de la complexité linéaire d'un block tab de M bits
+def berkelamp_massey(tab, M):   
     b = [1] +[0]*(M-1)
     c = [1] +[0]*(M-1)
     t = []
@@ -112,7 +122,7 @@ def berkelamp_massey(tab, M):
     for n in range(M):
         d = 0
         for i in range(l+1):
-            d ^= c[i] * int(tab[n - i])
+            d ^= c[i] * int(tab[n - i]) # ^ opérateur XOR 
         if (d==1):
             t = c[:] 
             M_N = n - m
@@ -125,7 +135,7 @@ def berkelamp_massey(tab, M):
     return l
       
     
-def algo10(n,M, e):
+def linearComplexityTest(n,M, e):
     mu = (M/2 + 10/36 - (M/3+2/9)/2**M) if M % 2 == 1 else (M/2 + 8/36 - (M/3+2/9)/2**M)
     T = 0
     N = int (n/M)
