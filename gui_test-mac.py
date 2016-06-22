@@ -10,7 +10,7 @@ from itertools import groupby
 from tkinter import *
 from tkinter.messagebox import *
 from pyzpaf import *
-from PIL import Image, ImageTk
+
 
 
 ##Interface Graphique
@@ -29,7 +29,7 @@ canvas.create_image(0, 0,  image=photo, anchor=NW)
 
 """ Lignes de saisies  """
 
-fenetre.geometry('800x400')
+fenetre.geometry('900x500')
 
 """Ajout d'un Background
 photo = PhotoImage(file="Users/anasbarakat/Documents/PAF-incertitude/de.png")
@@ -47,32 +47,31 @@ Fond.pack()
 """
 
 #insertion du titre 
-photo = PhotoImage(file='/Users/anasbarakat/Documents/PAF-incertitude/titre.gif')
-#canvas = Canvas(fenetre,width=10, height=10)
-#canvas.pack(fill=BOTH, expand=1)
-#canvas.create_image(10, 10,  image=photo, anchor=NW)
-#canvas.pack()
+photo = PhotoImage(file='/Users/anasbarakat/Documents/PAF-incertitude/titlev3.gif')
 title = Label(fenetre, image = photo)
 title.pack()
-title.place(x=50, y= 20)
+title.place(x=50, y= 50)
 
 #image de fond 
 photo2 = PhotoImage(file='/Users/anasbarakat/Documents/PAF-incertitude/de.gif')
 fond = Label(fenetre, image = photo2)
 fond.pack()
-fond.place(x=50, y= 100)
+fond.place(x=50, y= 150)
 
-y1= 100
+#input (bitstream and numeric parameters) 
+y1= 150
 Label1 = Label(fenetre, text = 'Input Data File :')
 Label1.pack()
 Label1.place(x=85, y=y1)
-File= StringVar()
-Champ1 = Entry(fenetre, textvariable= File, bg ='bisque', fg='maroon')
-Champ1.focus_set()
-Champ1.pack()
 #Champ1.place(x=175, y=25)
 
-Champ1.place(x=200, y=y1)
+
+var = StringVar(fenetre)
+var.set("file")
+option = OptionMenu(fenetre, var, "data", "matlab")
+option.pack()
+option.place(x=200,y=y1)
+file = var.get()
 
 
 y2=y1+30
@@ -115,8 +114,8 @@ Label5.pack(side = LEFT, padx = 10, pady = 10)
 Label5.place(x=110,y=300)
 
 
-# Radiobutton pour le choix de L'algorithme
-y11=240
+#Choix de L'algorithme
+y11=290
 y12=y11+30
 y13=y12+30
 y14=y13+30
@@ -134,8 +133,8 @@ bout3.place(x=75,y=y13)
 bout4.pack()
 bout4.place(x=75,y=y14)
 
-# Radiobutton pour le choix du graphe
-y21=240
+#Choix de la représentation graphique
+y21=290
 y22=y21+30
 y23=y22+30
 value = StringVar() 
@@ -149,36 +148,29 @@ bouton2.place(x=300,y=y22)
 bouton3.pack()
 bouton3.place(x=300,y=y23)
 
-cadre = Frame(fenetre, width=768, height=576, borderwidth=1)
-cadre.pack(fill=BOTH)
+#cadre = Frame(fenetre, width=768, height=576, borderwidth=1)
+#cadre.pack(fill=BOTH)
 
-message = Label(cadre)
-message.pack(side="top", fill=X)
+#message = Label(cadre)
+#message.pack(side="top", fill=X)
 
 # barre de menu 
-def alert():
-    showinfo("alerte", "Bravo!")
-menubar = Menu(fenetre)
 
-menu1 = Menu(menubar, tearoff=0)
-menu1.add_command(label="Créer", command=alert)
-menu1.add_command(label="Editer", command=alert)
-menu1.add_separator()
-menu1.add_command(label="Quitter", command=fenetre.quit)
-menubar.add_cascade(label="Fichier", menu=menu1)
+def Affiche(): tkMessageBox.showinfo("Exemple d'un Menu Tkinter") 
+def About(): tkMessageBox.showinfo("A propos", "Version 1.0")
 
-menu2 = Menu(menubar, tearoff=0)
-menu2.add_command(label="Couper", command=alert)
-menu2.add_command(label="Copier", command=alert)
-menu2.add_command(label="Coller", command=alert)
-menubar.add_cascade(label="Editer", menu=menu2)
-
-menu3 = Menu(menubar, tearoff=0)
-menu3.add_command(label="A propos", command=alert)
-menubar.add_cascade(label="Aide", menu=menu3)
-
-fenetre.config(menu=menubar)
-
+mainmenu = Menu(fenetre)  
+menuExample = Menu(mainmenu)  
+menuExample.add_command(label="Affiche", command=Affiche)  
+menuExample.add_command(label="Quitter", command=fenetre.quit) 
+  
+menuHelp = Menu(mainmenu) ## Menu Fils 
+menuHelp.add_command(label="A propos", command=About) 
+  
+mainmenu.add_cascade(label = "Exemple", menu=menuExample) 
+mainmenu.add_cascade(label = "Aide", menu=menuHelp) 
+  
+fenetre.config(menu = mainmenu) 
 
 
 #Bouton pour lancer le Programme
@@ -231,7 +223,7 @@ def Lancer():
 
 bouton_lancer = Button(fenetre, text='Lancer', command=Lancer)
 bouton_lancer.pack(side = BOTTOM, padx = 5, pady = 5)
-bouton_lancer.place(x=150,y=350)
+bouton_lancer.place(x=200,y=450)
 
 
 fenetre.mainloop()
