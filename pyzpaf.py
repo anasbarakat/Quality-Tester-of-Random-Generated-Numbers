@@ -169,7 +169,9 @@ def linearComplexityTest(n,M, e):
 ## Histogramme des P_values
 
 
-#f = [frequencyTest(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]##1004882
+
+#f = [frequencyTest(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]
+
 
 def hist(f):
     frequence, lim, patches = plt.hist(f, range = (0, 1), bins = 10)
