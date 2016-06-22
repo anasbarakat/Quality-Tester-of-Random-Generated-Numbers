@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 from math import *
+from decimal import Decimal
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
@@ -10,7 +11,7 @@ from itertools import groupby
 from tkinter import *
 from tkinter.messagebox import *
 
-fichier = open("/Users/anasbarakat/Documents/PAF-incertitudeRepo/data.txt", "r")
+fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
 epsilon = fichier.read()[3:]
 
 fichier.close()
@@ -136,7 +137,8 @@ def berkelamp_massey(tab, M):
       
     
 def linearComplexityTest(n,M, e):
-    mu = (M/2 + 10/36 - (M/3+2/9)/2**M) if M % 2 == 1 else (M/2 + 8/36 - (M/3+2/9)/2**M)
+    depowm=Decimal(2**M)
+    mu = (M/2 + 10/36 - (M/3+2/9)/depowm) if M % 2 == 1 else (M/2 + 8/36 - (M/3+2/9)/depowm)
     T = 0
     N = int (n/M)
     v = [0,0,0,0,0,0,0]
