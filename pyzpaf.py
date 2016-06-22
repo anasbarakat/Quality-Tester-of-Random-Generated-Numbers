@@ -141,7 +141,7 @@ def berkelamp_massey(tab, M):
       
     
 def linearComplexityTest(n,M, e):
-    depowm=Decimal(2**M)
+    depowm = 2**M
     mu = (M/2 + 10/36 - (M/3+2/9)/depowm) if M % 2 == 1 else (M/2 + 8/36 - (M/3+2/9)/depowm)
     T = 0
     N = int (n/M)
@@ -214,3 +214,10 @@ def percent(f):
         if(f[i]>0.01):
             s +=1
     return s/n
+    
+def P_value_T(f):
+    frequence = [sum(0.1*i<=num<0.1*(i+1) for num in f) for i in range(10)]
+    s_10 = len(f)/10
+    ki_carre = sum((f_i-s_10)**2/s_10 for f_i in frequence)
+    p_value_t = sp.special.gammaincc(9/2,ki_carre/2)
+    return p_value_t

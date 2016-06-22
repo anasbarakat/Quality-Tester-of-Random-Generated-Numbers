@@ -19,7 +19,7 @@ fenetre.title('Sure or not Sure That is the Question?')
 
 
 #Ajout d'un Background
-photo = PhotoImage(file="C:/Users/Azoulay/Desktop/PAF-incertitude/de.gif")
+photo = PhotoImage(file="C:/Users/Azoulay/Desktop/PAF-incertitude/de.gif", width =100, height=100)
 canvas = Canvas(fenetre,width=1, height=1)
 canvas.pack(fill=BOTH, expand=1)
 canvas.create_image(0, 0,  image=photo, anchor=NW)
@@ -95,22 +95,12 @@ Label5.pack(side = LEFT, padx = 10, pady = 10)
 Label5.place(x=110,y=300)
 
 
-Label6 = Label(fenetre, text = 'Number of Blocks :')
-Label6.pack()
-Label6.place(x=75, y=125)
-nobl= StringVar()
-Champ6 = Entry(fenetre, textvariable= nobl, bg ='bisque', fg='maroon')
-Champ6.focus_set()
-Champ6.pack()
-Champ6.place(x=175, y=125)
-#Champ6.place(x=200, y=125)
-
 # Radiobutton pour le choix de L'algorithme
 val = StringVar() 
-bout1 = Radiobutton(fenetre, text="Frequency Test", variable=val, val=1)
-bout2 = Radiobutton(fenetre, text="Frequency Test Within a Block", variable=val, val=2)
-bout3 = Radiobutton(fenetre, text="Discrete Fourier Transform Test", variable=val, val=3)
-bout4 = Radiobutton(fenetre, text="Linear Complexity Test", variable=val, val=4)
+bout1 = Radiobutton(fenetre, text="Frequency Test (1)", variable=val, val=1)
+bout2 = Radiobutton(fenetre, text="Frequency Test Within a Block (2)", variable=val, val=2)
+bout3 = Radiobutton(fenetre, text="Discrete Fourier Transform Test (6)", variable=val, val=3)
+bout4 = Radiobutton(fenetre, text="Linear Complexity Test (10)", variable=val, val=4)
 bout1.pack()
 bout1.place(x=20,y=160)
 bout2.pack()
@@ -184,7 +174,8 @@ def Lancer():
     if(type_graphe == 3):
         curve(f)
     p = percent(f)*100
-    Label5.config(text = 'Result : Proportion = ' + str(p)  + ' %')    
+    pvt = P_value_T(f)
+    Label5.config(text = 'Result : Proportion = ' + str(p)  + ' % \n P_value_T = '+ str(pvt))    
 
 
 bouton_lancer = Button(fenetre, text='Lancer', command=Lancer)
