@@ -12,11 +12,11 @@ from tkinter import *
 from tkinter.messagebox import *
 
 
-fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
-epsilon = fichier.read()[3:]
-
-#fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
+#fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
 #epsilon = fichier.read()[3:]
+
+fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
+epsilon = fichier.read()[3:]
 
 fichier.close()
 
