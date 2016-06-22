@@ -17,18 +17,6 @@ from pyzpaf import *
 
 fenetre = Tk()
 fenetre.title('Sure or not Sure That is the Question?')
-
-"""
-#Ajout d'un Background
-photo = PhotoImage(file="C:/Users/Azoulay/Desktop/PAF-incertitude/de.gif")
-canvas = Canvas(fenetre,width=1, height=1)
-canvas.pack(fill=BOTH, expand=1)
-canvas.create_image(0, 0,  image=photo, anchor=NW)
-#fenetre.geometry('381x350')
-"""
-
-""" Lignes de saisies  """
-
 fenetre.geometry('900x500')
 
 """Ajout d'un Background
@@ -36,15 +24,6 @@ photo = PhotoImage(file="Users/anasbarakat/Documents/PAF-incertitude/de.png")
 canvas = Canvas(fenetre,width=1, height=1)
 canvas.pack(fill=BOTH, expand=1)
 canvas.create_image(0, 0,  image=photo, anchor=NW)"""
-
-
-""" Lignes de saisies  """
-"""
-cadre=Frame(fenetre)
-cadre.pack()
-Fond = Canvas(fenetre, width = 800, height = 400, bg = 'white')
-Fond.pack()
-"""
 
 #insertion du titre 
 photo = PhotoImage(file='/Users/anasbarakat/Documents/PAF-incertitude/titlev3.gif')
@@ -55,8 +34,9 @@ title.place(x=50, y= 50)
 #image de fond 
 photo2 = PhotoImage(file='/Users/anasbarakat/Documents/PAF-incertitude/de.gif')
 fond = Label(fenetre, image = photo2)
+photo2.zoom(10,10)
 fond.pack()
-fond.place(x=50, y= 150)
+fond.place(x=400, y= 180)
 
 #input (bitstream and numeric parameters) 
 y1= 150
@@ -155,7 +135,7 @@ bouton3.place(x=300,y=y23)
 #message.pack(side="top", fill=X)
 
 # barre de menu 
-
+"""
 def Affiche(): tkMessageBox.showinfo("Exemple d'un Menu Tkinter") 
 def About(): tkMessageBox.showinfo("A propos", "Version 1.0")
 
@@ -171,7 +151,40 @@ mainmenu.add_cascade(label = "Exemple", menu=menuExample)
 mainmenu.add_cascade(label = "Aide", menu=menuHelp) 
   
 fenetre.config(menu = mainmenu) 
+"""
+def callback():
+    print ("called the callback!")
 
+# create a menu
+menu = Menu(fenetre)
+fenetre.config(menu=menu)
+
+filemenu = Menu(menu)
+menu.add_cascade(label="File", menu=filemenu)
+filemenu.add_command(label="New", command=callback)
+filemenu.add_command(label="Open...", command=callback)
+filemenu.add_separator()
+filemenu.add_command(label="Exit", command=callback)
+
+helpmenu = Menu(menu)
+menu.add_cascade(label="Help", menu=helpmenu)
+helpmenu.add_command(label="About...", command=callback)
+
+"""
+# Bar menu (toolbar)
+def callback():
+    print ("called the callback!")
+
+toolbar = Frame(fenetre)
+
+b = Button(toolbar, text="new", width=6, command=callback)
+b.pack(side=LEFT, padx=2, pady=2)
+
+b = Button(toolbar, text="open", width=6, command=callback)
+b.pack(side=LEFT, padx=2, pady=2)
+
+toolbar.pack(side=TOP, fill=X)
+"""
 
 #Bouton pour lancer le Programme
 def Lancer():
