@@ -6,6 +6,8 @@ from decimal import Decimal
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
+from numpy.linalg import matrix_rank
+
 from scipy import special
 from itertools import groupby
 from tkinter import *
@@ -15,10 +17,10 @@ from tkinter.messagebox import *
 #fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
 #epsilon = fichier.read()[3:]
 
-fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
-epsilon = fichier.read()[3:]
+#fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
+#epsilon = fichier.read()[3:]
 
-fichier.close()
+#fichier.close()
 
 #n = int(input("Entrée la longueur n : "))
 
@@ -214,3 +216,33 @@ def percent(f):
         if(f[i]>0.01):
             s +=1
     return s/n
+
+""" Algorithme 5: Binary Matrix Rank Test """
+
+def binaryMatrixTest(n,e,M,Q):
+    epsilon= np.array([int(x) for x in list(e)])
+    print(epsilon)
+    N= n//(Q*M)
+    slice=Q*M
+    Ranks=[]
+    Ranks += [matrix_rank(np.reshape(epsilon[0:slice],(M,Q)))]
+    for k in range(1,N):
+        Ranks +=[matrix_rank(np.reshape(epsilon[k*slice +1 :(k+1)*slice+1],(M,Q)))]
+#    print(Ranks) 
+    
+    FM=0
+    FM_1=0
+    for i in range(len(Ranks)):
+        if(Ranks[i]==M):
+            FM +=1
+        if(Ranks[i]==M-1):
+            FM_1 +=1
+            
+    ki_carre= ((FM-0.2888*N)**2)/(0.2888*N)+(FM_1-0.5776*N)**2/(0.5776*N)+((N-FM-FM_1-0.1336*N)**2)/(0.1336*N)
+    P_value= np.exp((-1)*ki_carre/2)
+#    print(P_value)
+    return P_value 
+    
+epsi= "01011001001010101101"
+binaryMatrixTest(20,epsi,3,3)
+

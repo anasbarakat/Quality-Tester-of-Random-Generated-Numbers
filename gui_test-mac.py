@@ -36,7 +36,7 @@ photo2 = PhotoImage(file='/Users/anasbarakat/Documents/PAF-incertitude/de.gif')
 fond = Label(fenetre, image = photo2)
 photo2.zoom(10,10)
 fond.pack()
-fond.place(x=400, y= 180)
+fond.place(x=470, y= 160)
 
 #input (bitstream and numeric parameters) 
 y1= 150
