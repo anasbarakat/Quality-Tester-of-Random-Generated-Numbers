@@ -12,11 +12,11 @@ from tkinter import *
 from tkinter.messagebox import *
 
 
-#fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
-#epsilon = fichier.read()[3:]
-
-fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
+fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
 epsilon = fichier.read()[3:]
+
+#fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
+#epsilon = fichier.read()[3:]
 
 fichier.close()
 
@@ -113,6 +113,53 @@ def testDCT(n, epsilon):
 
 #print(testDCTalgo(10,epsilon1))
 
+""" Algorithme 7: Non-Overlapping Template Matching Test """
+#S'assurer que M>0.01*n
+def NonOverlappingTemplateMatching(n,M, B, e):
+    N = int(n/M) #N doit être <100
+    m = len(B) # m se doit d'être environ égale à 9 ou 10 
+    w = [0]*N
+    for i in range(N):
+        block = e[i:i+M]
+        j = 0
+        while j < M-m+1:
+            if(B == block[j:j+m]):
+                w[i] += 1
+                j += m
+            else : 
+                j += 1
+    mu = (M - m +1)/2**m
+    sigma_carre = M*(1/2**m - (2*m-1)/2**(2*m))
+    ki_carre = sum([(wi-mu)**2/sigma_carre for wi in w])
+    P_value = sp.special.gammaincc(N/2 , ki_carre/2)
+    return P_value
+
+
+""" Algorithme 8: Overlapping Template Matching Test """
+
+#il faut que n>10**6
+def OverlappingTemplateMatching(n,B, e):
+    m = len(B) #m environ égale à log_2(M) soit 9 ou 10
+    K = 5
+    M = 1032
+    N = 968
+    v = [0]*(K+1)
+    for i in range(N):
+        block = e[i:i+M]
+        cpt = 0
+        for j in range(M-m+1):
+            cpt += (B == block[j:j+m])
+        if(cpt>=5):
+            v[5]+=1
+        else:
+            v[cpt]+=1
+    lameda = (M-m+1)/2**m
+    eta = lameda/2
+    ki_carre = sum([(v[0]-N*0.364091)**2/(N*0.364091),(v[1]-N*0.185659)**2/(N*0.185659),(v[2]-N*0.139381)**2/(N*0.139831),  
+                    (v[3]-N*0.100571)**2/(N*0.100571),(v[4]-N*0.070432)**2/(N*0.070432),(v[5]-N*0.166269)**2/(N*0.166269)])
+    P_value = sp.special.gammaincc(5/2 , ki_carre/2)
+    return P_value
+
 
 """ Algorithme 10: Linear Complexity Test """
 
@@ -173,9 +220,6 @@ def linearComplexityTest(n,M, e):
 
 
 ## Histogramme des P_values
-
-
-
 #f = [frequencyTest(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]
 
 
