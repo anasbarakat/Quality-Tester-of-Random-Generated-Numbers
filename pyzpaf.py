@@ -6,26 +6,24 @@ from decimal import Decimal
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
+from numpy.linalg import matrix_rank
+
 from scipy import special
 from itertools import groupby
 from tkinter import *
 from tkinter.messagebox import *
 
 
-fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
-epsilon = fichier.read()[3:]
 
-#fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
+#fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
+fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
 #epsilon = fichier.read()[3:]
+#fichier.close()
 
-fichier.close()
+################## Implémentation des algorithmes  #######################
 
-#n = int(input("Entrée la longueur n : "))
+""" Algorithme 1 : Frequency (Monobit) Test  """
 
-## Implémentations des Algorithmes
-
-
-"""    Algorithme 1 : Frequency (Monobit) Test  """
 def frequencyTest(n, e):# n longueur de la séquence, e séquence de bits
     S_n = 0
     for i in range(n):
@@ -33,7 +31,6 @@ def frequencyTest(n, e):# n longueur de la séquence, e séquence de bits
     s_obs = abs(S_n)/sqrt(n)
     P_value = erfc(s_obs/sqrt(2))
     return P_value
-
 
 """ Algorithme 2: Frequency Test within a Block"""
 
@@ -51,6 +48,38 @@ def frequencyTestBlock(n, M, e): # n longueur de la séquence, M taille d'un blo
     return P_value
     
 #a = algo2(100, 10, "1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000") fournit des erreurs d'approximations sur les fractions
+
+""" Algorithme 5: Binary Matrix Rank Test """
+
+def binaryMatrixTest(n,e,M,Q): # e séquence binaire 
+    epsilon= np.array([int(x) for x in list(e)]) # conversion string (entrée) en vecteur epsilon 
+    print(epsilon)
+    N= n//(Q*M)
+    slice=Q*M # taille choisie pour le découpage de la séquence binaire 
+    Ranks=[]
+    Ranks += [matrix_rank(np.reshape(epsilon[0:slice],(M,Q)))] 
+    # rang des matrices formées par les blocs du découpage rangés dans une liste
+    for k in range(1,N):
+        Ranks +=[matrix_rank(np.reshape(epsilon[k*slice +1 :(k+1)*slice+1],(M,Q)))]
+#    print(Ranks) 
+    
+    FM=0
+    FM_1=0
+    #comptage des rangs valant M et M-1
+    for i in range(len(Ranks)):
+        if(Ranks[i]==M):
+            FM +=1
+        if(Ranks[i]==M-1):
+            FM_1 +=1
+            
+    ki_carre= ((FM-0.2888*N)**2)/(0.2888*N)+(FM_1-0.5776*N)**2/(0.5776*N)+((N-FM-FM_1-0.1336*N)**2)/(0.1336*N)
+    P_value= np.exp((-1)*ki_carre/2)
+#    print(P_value)
+    return P_value 
+
+#for testing    
+#epsi= "01011001001010101101"
+#binaryMatrixTest(20,epsi,3,3)
 
 """ Algorithme 6: Discrete Fourier Transform (Spectral) Test """
 
@@ -83,19 +112,17 @@ def DFT(n,X):
 def P_value(n, epsilon):
     T= sqrt(log(1/0.05)*n) # valeur du seuil de décision sur le module 
    # print("T=", T)
-    N0=0.95*n/2  # valeur de référence (au seuil de 95%) 
-    # pour le nombre de pics du module de la TFD 
+    N0=0.95*n/2  # valeur de référence (au seuil de 95%)  
    # print("N0=", N0)
-    N1=0    
+    N1=0    # pour le nombre de pics du module de la TFD
     M= DFT(n,epsilonToX(n, epsilon))
    # print("M=", M)
     
     for k in range(len(M)): # pour le calcul du nombre de modules < T 
         if (M[k]<T):
             N1 +=1
-    
+            
    # print("N1=", N1 )
-    
     d= (N1-N0)/(sqrt(n*(0.95)*(0.05)/4))
    # print("d=", d)
     P_value= erfc(abs(d)/sqrt(2))
@@ -216,13 +243,13 @@ def linearComplexityTest(n,M, e):
     return P_value
             
 #a = algo10(1000000,1000, epsilon[:1000000])        
-        
+       
 
+
+#################### Représentations graphiques #############################
 
 ## Histogramme des P_values
 #f = [frequencyTest(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]
-
-
 def hist(f):
     frequence, lim, patches = plt.hist(f, range = (0, 1), bins = 10)
     plt.xlabel('Valeurs de P_value')
@@ -258,10 +285,16 @@ def percent(f):
         if(f[i]>0.01):
             s +=1
     return s/n
-    
+
 def P_value_T(f):
     frequence = [sum(0.1*i<=num<0.1*(i+1) for num in f) for i in range(10)]
     s_10 = len(f)/10
     ki_carre = sum((f_i-s_10)**2/s_10 for f_i in frequence)
     p_value_t = sp.special.gammaincc(9/2,ki_carre/2)
     return p_value_t
+
+
+
+
+    
+
