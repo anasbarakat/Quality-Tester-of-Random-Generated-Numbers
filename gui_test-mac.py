@@ -47,18 +47,17 @@ Label1.place(x=140, y=y1)
 
 Xchamps=250
 var = StringVar(fenetre)
-var.set("file")
+var.set("data")
 option = OptionMenu(fenetre, var, "data", "matlab")
 option.pack()
 option.place(x=Xchamps,y=y1)
-file = var.get()
-
 
 y2=y1+30
 Label2 = Label(fenetre, text = 'BitStream length :')
 Label2.pack()
 Label2.place(x=75, y=y2)
 bsl= StringVar()
+bsl.set("10000")
 Champ2 = Entry(fenetre, textvariable= bsl, bg ='bisque', fg='maroon')
 Champ2.focus_set()
 Champ2.pack()
@@ -67,7 +66,7 @@ Champ2.place(x=Xchamps, y=y2)
 
 
 y3=y2+30
-Label3 = Label(fenetre, text = 'Number of Bitestream :')
+Label3 = Label(fenetre, text = 'Number of BitStreams :')
 Label3.pack()
 Label3.place(x=45, y=y3)
 nob= StringVar()
@@ -150,6 +149,15 @@ bouton2.place(x=400,y=y22)
 bouton3.pack()
 bouton3.place(x=400,y=y23)
 
+#Option chiffrement RC4 pour rendre la séquence plus aléatoire
+var=StringVar() 
+y24=y23+60
+var.set("Sans Cryptage RC4")
+optionRC4 = OptionMenu(fenetre, var, "Sans Cryptage RC4", "Avec Cryptage RC4")
+optionRC4.pack()
+optionRC4.place(x=400,y=y24)
+
+
 #cadre = Frame(fenetre, width=768, height=576, borderwidth=1)
 #cadre.pack(fill=BOTH)
 
@@ -160,11 +168,19 @@ bouton3.place(x=400,y=y23)
 def Lancer():
     type_graphe = int(value.get())
     algo = int(val.get())
-    file = str(Champ1.get())
+    file = var.get()
+    print("file=",file)
+    #file = str(Champ1.get())
     # fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/"+file+".txt", "r")
-    #epsilon = fichier.read()[3:]
-    #fichier.close()
-    BitStream_Length = int(Champ2.get())
+    fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/"+ file +".txt", "r")
+    epsilon = fichier.read()[3:]
+    fichier.close()
+    a=Champ2.get()
+    if( a == ""):
+        BitStream_Length = 10000
+    else:
+        BitStream_Length = int(a)
+    #BitStream_Length = int(Champ2.get())
     Nb_of_BitStream = int(Champ3.get())
     BlockLength = int(Champ4.get())
     Template = str(Champ6.get())
@@ -189,7 +205,7 @@ def Lancer():
     if((BlockLength < 500 or BlockLength >5000 )  and algo ==2):
         messagebox.showinfo("Input Size Recommendation","The number of blocks must be between 500 and 5000")
     
-    if((BlockLength < n/100)  and algo == 5):
+    if((BlockLength < BitStream_Length/100)  and algo == 5):
         messagebox.showinfo("Input Size Recommendation","Make sure that M > n*0.01")
     
     if((BitStream_Length < 1000000)  and algo == 6):
@@ -217,7 +233,8 @@ def Lancer():
     if(type_graphe == 3):
         curve(f)
     p = percent(f)*100
-    Label5.config(text = 'Result : Proportion = ' + str(p)  + ' %')    
+    pvt = P_value_T(f)
+    Label5.config(text = 'Result : Proportion = ' + str(p)  + ' % \n P_value_T = '+ str(pvt))     
 
 
 bouton_lancer = Button(fenetre, text='Lancer', command=Lancer)
