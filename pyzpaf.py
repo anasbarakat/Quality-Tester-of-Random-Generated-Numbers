@@ -14,20 +14,16 @@ from tkinter import *
 from tkinter.messagebox import *
 
 
+
 #fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/data.txt", "r")
+fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
 #epsilon = fichier.read()[3:]
-
-#fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/data.txt", "r")
-#epsilon = fichier.read()[3:]
-
 #fichier.close()
 
-#n = int(input("Entrée la longueur n : "))
+################## Implémentation des algorithmes  #######################
 
-## Implémentations des Algorithmes
+""" Algorithme 1 : Frequency (Monobit) Test  """
 
-
-"""    Algorithme 1 : Frequency (Monobit) Test  """
 def frequencyTest(n, e):# n longueur de la séquence, e séquence de bits
     S_n = 0
     for i in range(n):
@@ -35,7 +31,6 @@ def frequencyTest(n, e):# n longueur de la séquence, e séquence de bits
     s_obs = abs(S_n)/sqrt(n)
     P_value = erfc(s_obs/sqrt(2))
     return P_value
-
 
 """ Algorithme 2: Frequency Test within a Block"""
 
@@ -53,6 +48,38 @@ def frequencyTestBlock(n, M, e): # n longueur de la séquence, M taille d'un blo
     return P_value
     
 #a = algo2(100, 10, "1100100100001111110110101010001000100001011010001100001000110100110001001100011001100010100010111000") fournit des erreurs d'approximations sur les fractions
+
+""" Algorithme 5: Binary Matrix Rank Test """
+
+def binaryMatrixTest(n,e,M,Q): # e séquence binaire 
+    epsilon= np.array([int(x) for x in list(e)]) # conversion string (entrée) en vecteur epsilon 
+    print(epsilon)
+    N= n//(Q*M)
+    slice=Q*M # taille choisie pour le découpage de la séquence binaire 
+    Ranks=[]
+    Ranks += [matrix_rank(np.reshape(epsilon[0:slice],(M,Q)))] 
+    # rang des matrices formées par les blocs du découpage rangés dans une liste
+    for k in range(1,N):
+        Ranks +=[matrix_rank(np.reshape(epsilon[k*slice +1 :(k+1)*slice+1],(M,Q)))]
+#    print(Ranks) 
+    
+    FM=0
+    FM_1=0
+    #comptage des rangs valant M et M-1
+    for i in range(len(Ranks)):
+        if(Ranks[i]==M):
+            FM +=1
+        if(Ranks[i]==M-1):
+            FM_1 +=1
+            
+    ki_carre= ((FM-0.2888*N)**2)/(0.2888*N)+(FM_1-0.5776*N)**2/(0.5776*N)+((N-FM-FM_1-0.1336*N)**2)/(0.1336*N)
+    P_value= np.exp((-1)*ki_carre/2)
+#    print(P_value)
+    return P_value 
+
+#for testing    
+#epsi= "01011001001010101101"
+#binaryMatrixTest(20,epsi,3,3)
 
 """ Algorithme 6: Discrete Fourier Transform (Spectral) Test """
 
@@ -85,19 +112,17 @@ def DFT(n,X):
 def P_value(n, epsilon):
     T= sqrt(log(1/0.05)*n) # valeur du seuil de décision sur le module 
    # print("T=", T)
-    N0=0.95*n/2  # valeur de référence (au seuil de 95%) 
-    # pour le nombre de pics du module de la TFD 
+    N0=0.95*n/2  # valeur de référence (au seuil de 95%)  
    # print("N0=", N0)
-    N1=0    
+    N1=0    # pour le nombre de pics du module de la TFD
     M= DFT(n,epsilonToX(n, epsilon))
    # print("M=", M)
     
     for k in range(len(M)): # pour le calcul du nombre de modules < T 
         if (M[k]<T):
             N1 +=1
-    
+            
    # print("N1=", N1 )
-    
     d= (N1-N0)/(sqrt(n*(0.95)*(0.05)/4))
    # print("d=", d)
     P_value= erfc(abs(d)/sqrt(2))
@@ -114,6 +139,53 @@ def testDCT(n, epsilon):
         return "The sequence is RANDOM"
 
 #print(testDCTalgo(10,epsilon1))
+
+""" Algorithme 7: Non-Overlapping Template Matching Test """
+#S'assurer que M>0.01*n
+def NonOverlappingTemplateMatching(n,M, B, e):
+    N = int(n/M) #N doit être <100
+    m = len(B) # m se doit d'être environ égale à 9 ou 10 
+    w = [0]*N
+    for i in range(N):
+        block = e[i:i+M]
+        j = 0
+        while j < M-m+1:
+            if(B == block[j:j+m]):
+                w[i] += 1
+                j += m
+            else : 
+                j += 1
+    mu = (M - m +1)/2**m
+    sigma_carre = M*(1/2**m - (2*m-1)/2**(2*m))
+    ki_carre = sum([(wi-mu)**2/sigma_carre for wi in w])
+    P_value = sp.special.gammaincc(N/2 , ki_carre/2)
+    return P_value
+
+
+""" Algorithme 8: Overlapping Template Matching Test """
+
+#il faut que n>10**6
+def OverlappingTemplateMatching(n,B, e):
+    m = len(B) #m environ égale à log_2(M) soit 9 ou 10
+    K = 5
+    M = 1032
+    N = 968
+    v = [0]*(K+1)
+    for i in range(N):
+        block = e[i:i+M]
+        cpt = 0
+        for j in range(M-m+1):
+            cpt += (B == block[j:j+m])
+        if(cpt>=5):
+            v[5]+=1
+        else:
+            v[cpt]+=1
+    lameda = (M-m+1)/2**m
+    eta = lameda/2
+    ki_carre = sum([(v[0]-N*0.364091)**2/(N*0.364091),(v[1]-N*0.185659)**2/(N*0.185659),(v[2]-N*0.139381)**2/(N*0.139831),  
+                    (v[3]-N*0.100571)**2/(N*0.100571),(v[4]-N*0.070432)**2/(N*0.070432),(v[5]-N*0.166269)**2/(N*0.166269)])
+    P_value = sp.special.gammaincc(5/2 , ki_carre/2)
+    return P_value
 
 
 """ Algorithme 10: Linear Complexity Test """
@@ -143,7 +215,7 @@ def berkelamp_massey(tab, M):
       
     
 def linearComplexityTest(n,M, e):
-    depowm=Decimal(2**M)
+    depowm = 2**M
     mu = (M/2 + 10/36 - (M/3+2/9)/depowm) if M % 2 == 1 else (M/2 + 8/36 - (M/3+2/9)/depowm)
     T = 0
     N = int (n/M)
@@ -171,16 +243,13 @@ def linearComplexityTest(n,M, e):
     return P_value
             
 #a = algo10(1000000,1000, epsilon[:1000000])        
-        
+       
 
+
+#################### Représentations graphiques #############################
 
 ## Histogramme des P_values
-
-
-
 #f = [frequencyTest(1000,epsilon[i:i+1000]) for i in range(1000,50000,1000)]
-
-
 def hist(f):
     frequence, lim, patches = plt.hist(f, range = (0, 1), bins = 10)
     plt.xlabel('Valeurs de P_value')
@@ -217,32 +286,15 @@ def percent(f):
             s +=1
     return s/n
 
-""" Algorithme 5: Binary Matrix Rank Test """
+def P_value_T(f):
+    frequence = [sum(0.1*i<=num<0.1*(i+1) for num in f) for i in range(10)]
+    s_10 = len(f)/10
+    ki_carre = sum((f_i-s_10)**2/s_10 for f_i in frequence)
+    p_value_t = sp.special.gammaincc(9/2,ki_carre/2)
+    return p_value_t
 
-def binaryMatrixTest(n,e,M,Q):
-    epsilon= np.array([int(x) for x in list(e)])
-    print(epsilon)
-    N= n//(Q*M)
-    slice=Q*M
-    Ranks=[]
-    Ranks += [matrix_rank(np.reshape(epsilon[0:slice],(M,Q)))]
-    for k in range(1,N):
-        Ranks +=[matrix_rank(np.reshape(epsilon[k*slice +1 :(k+1)*slice+1],(M,Q)))]
-#    print(Ranks) 
+
+
+
     
-    FM=0
-    FM_1=0
-    for i in range(len(Ranks)):
-        if(Ranks[i]==M):
-            FM +=1
-        if(Ranks[i]==M-1):
-            FM_1 +=1
-            
-    ki_carre= ((FM-0.2888*N)**2)/(0.2888*N)+(FM_1-0.5776*N)**2/(0.5776*N)+((N-FM-FM_1-0.1336*N)**2)/(0.1336*N)
-    P_value= np.exp((-1)*ki_carre/2)
-#    print(P_value)
-    return P_value 
-    
-epsi= "01011001001010101101"
-binaryMatrixTest(20,epsi,3,3)
 
