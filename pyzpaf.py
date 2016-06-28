@@ -164,6 +164,10 @@ def NonOverlappingTemplateMatching(n,M, B, e):
 
 """ Algorithme 8: Overlapping Template Matching Test """
 
+def delta(l,u):
+    res = sum([1/2**k*sp.special.binom(k-1,l-1) for k in range(1,6)])
+    return res
+
 #il faut que n>10**6
 def OverlappingTemplateMatching(n,B, e):
     m = len(B) #m environ égale à log_2(M) soit 9 ou 10
@@ -182,8 +186,10 @@ def OverlappingTemplateMatching(n,B, e):
             v[cpt]+=1
     lameda = (M-m+1)/2**m
     eta = lameda/2
-    ki_carre = sum([(v[0]-N*0.364091)**2/(N*0.364091),(v[1]-N*0.185659)**2/(N*0.185659),(v[2]-N*0.139381)**2/(N*0.139831),  
-                    (v[3]-N*0.100571)**2/(N*0.100571),(v[4]-N*0.070432)**2/(N*0.070432),(v[5]-N*0.166269)**2/(N*0.166269)])
+    pi_5 = exp(-eta)*sum([eta**l/np.math.factorial(l)*delta(l,5) for l in range(1,6)])
+    pi = [exp(-eta),eta/2*exp(-eta), exp(-eta)*eta/8*(eta+2),exp(-eta)*eta/8*(eta**2/6+eta+1),exp(-eta)*eta/16*(eta**3/24+eta**2/2+3*eta/2+1),pi_5]
+    ki_carre = sum([(v[0]-N*pi[0])**2/(N*pi[0]),(v[1]-N*pi[1])**2/(N*pi[1]),(v[2]-N*pi[2])**2/(N*pi[2]),  
+                    (v[3]-N*pi[3])**2/(N*pi[3]),(v[4]-N*pi[4])**2/(N*pi[4]),(v[5]-N*pi[5])**2/(N*pi[5])])
     P_value = sp.special.gammaincc(5/2 , ki_carre/2)
     return P_value
 
