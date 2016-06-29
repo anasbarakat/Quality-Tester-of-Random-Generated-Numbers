@@ -24,17 +24,46 @@ class WikipediaARC4:
             self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
             output[i] = chr((ord(input[i]) ^ self.state[(self.state[self.x] + self.state[self.y]) & 0xFF]))# chr is the character corresponding to a code 
         return ''.join(output)
+# pour la conversion de l'hexadécimal au binaire 
+conv = {
+    '0' : '0000',
+    '1' : '0001',
+    '2' : '0010',
+    '3' : '0011',
+    '4' : '0100',
+    '5' : '0101',
+    '6' : '0110',
+    '7' : '0111',
+    '8' : '1000',
+    '9' : '1001',
+    'A' : '1010',
+    'B' : '1011',
+    'C' : '1100',
+    'D' : '1101',
+    'E' : '1110',
+    'F' : '1111',
+}
+ 
+def hex2bin(d, nb = 0):
+    return ''.join([conv[ch] for ch in d]).zfill(nb) 
  
 import base64
-#def encode(sh):
-  #  print(base64.b16encode(bytes(sh, 'latin')).upper())
-  #  return base64.b16encode(bytes(sh, 'latin')).upper()
+def encode(sh):
+   #print(base64.b16encode(bytes(sh, 'latin')).upper())
+   return base64.b16encode(bytes(sh, 'latin')).upper()
 
-if __name__ == '__main__':
-    #test_vectors = [['Key', 'Plaintext'], \
-    #               ['Wiki', 'pedia'], \
-    #               ['Secret', 'Attack at dawn']]
-    test= ['Key', ]
-    #for i in test_vectors:
-        encode(WikipediaARC4([0]).crypt(i[1]))
+#if __name__ == '__main__':
+#    test_vectors = [['Key', 'Plaintext'], \
+#                   ['Wiki', 'pedia'], \
+#                   ['Secret', 'Attack at dawn']]
+    #test= ['Key', ]
+#    for i in test_vectors:
+#        encode(WikipediaARC4(i[0]).crypt(i[1]))
+#        print(hex2bin(str(encode(WikipediaARC4(i[0]).crypt(i[1])).decode('ascii'))))
+#        hex2bin(str(encode(WikipediaARC4(i[0]).crypt(i[1])).decode('ascii')))
+        #print(hex2bin(str(encode(WikipediaARC4('Key').crypt('01110001101')).decode('ascii'))))
+        
+        
+
+
         
