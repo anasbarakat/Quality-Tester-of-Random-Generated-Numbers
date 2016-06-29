@@ -1,16 +1,22 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
+#pour les maths et les  courbes 
 from math import *
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 from scipy import special
+
+#autres scripts python
+from pyzpaf import *
+from RC4 import *
+
+#pour la GUI
 from itertools import groupby
 from tkinter import *
 from tkinter.messagebox import *
-from pyzpaf import *
-
+import ttk 
 
 
 ##Interface Graphique
@@ -58,7 +64,7 @@ Label2.pack()
 Label2.place(x=75, y=y2)
 bsl= StringVar()
 bsl.set("10000")
-Champ2 = Entry(fenetre, textvariable= bsl, bg ='bisque', fg='maroon')
+Champ2 = Entry(fenetre, textvariable= bsl, bg ='bisque', fg='blue')
 Champ2.focus_set()
 Champ2.pack()
 #Champ2.place(x=175, y=50)
@@ -70,7 +76,7 @@ Label3 = Label(fenetre, text = 'Number of BitStreams :')
 Label3.pack()
 Label3.place(x=45, y=y3)
 nob= StringVar()
-Champ3 = Entry(fenetre, textvariable= nob, bg ='bisque', fg='maroon')
+Champ3 = Entry(fenetre, textvariable= nob, bg ='bisque', fg='blue')
 Champ3.focus_set()
 Champ3.pack()
 #Champ3.place(x=175, y=75)
@@ -81,7 +87,7 @@ Label4 = Label(fenetre, text = 'Block Length (M) :')
 Label4.pack()
 Label4.place(x=75, y=y4)
 nobl= StringVar()
-Champ4 = Entry(fenetre, textvariable= nobl, bg ='bisque', fg='maroon')
+Champ4 = Entry(fenetre, textvariable= nobl, bg ='bisque', fg='blue')
 Champ4.focus_set()
 Champ4.pack()
 #Champ4.place(x=175, y=100)
@@ -92,7 +98,7 @@ Label6 = Label(fenetre, text = 'Template Choice (Algo 7 et 8) :')
 Label6.pack()
 Label6.place(x=30, y=y5)
 tc= StringVar()
-Champ6 = Entry(fenetre, textvariable= tc, bg ='bisque', fg='maroon')
+Champ6 = Entry(fenetre, textvariable= tc, bg ='bisque', fg='blue')
 Champ6.focus_set()
 Champ6.pack()
 #Champ4.place(x=175, y=100)
@@ -150,31 +156,51 @@ bouton3.pack()
 bouton3.place(x=400,y=y23)
 
 #Option chiffrement RC4 pour rendre la séquence plus aléatoire
-var=StringVar() 
+vari=StringVar() 
 y24=y23+60
-var.set("Sans Cryptage RC4")
-optionRC4 = OptionMenu(fenetre, var, "Sans Cryptage RC4", "Avec Cryptage RC4")
+vari.set("Sans Cryptage RC4")
+optionRC4 = OptionMenu(fenetre, vari, "Sans Cryptage RC4", "Avec Cryptage RC4")
 optionRC4.pack()
 optionRC4.place(x=400,y=y24)
 
+#Affichage du résultat dans des box
+Labelp = Label(fenetre, text = 'Result: Proportion =')
+Labelp.pack()
+Labelp.place(x=415, y=600)
+lp= StringVar()
+ChampProp = Entry(fenetre, textvariable= lp, bg ='bisque', fg='red')
+ChampProp.focus_set()
+ChampProp.pack()
+ChampProp.place(x=550, y=600)
 
-#cadre = Frame(fenetre, width=768, height=576, borderwidth=1)
-#cadre.pack(fill=BOTH)
+Labelpvt = Label(fenetre, text = 'P_value_T =')
+Labelpvt.pack()
+Labelpvt.place(x=470, y=630)
+lpvt= StringVar()
+ChampPvt = Entry(fenetre, textvariable= lpvt, bg ='bisque', fg='red')
+ChampPvt.focus_set()
+ChampPvt.pack()
+ChampPvt.place(x=550, y=630)
 
-#message = Label(cadre)
-#message.pack(side="top", fill=X)
+#Progress bar pour l'attente du  calcul 
+#pb = ttk.Progressbar(fenetre, orient="horizontal", length=200, mode="determinate")
+#pb.pack()
 
 #Bouton pour lancer le Programme
 def Lancer():
     type_graphe = int(value.get())
     algo = int(val.get())
     file = var.get()
+    RC4= vari.get()
     print("file=",file)
     #file = str(Champ1.get())
     # fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/"+file+".txt", "r")
     fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/"+ file +".txt", "r")
-    epsilon = fichier.read()[3:]
+    epsilon = fichier.read()[1:]
     fichier.close()
+    if(RC4== "Avec Cryptage RC4" ):
+        #epsilon=encode(WikipediaARC4('Key').crypt(epsilon))
+        epsilon=hex2bin(str(encode(WikipediaARC4('Key').crypt(epsilon)).decode('ascii')))
     a=Champ2.get()
     if( a == ""):
         BitStream_Length = 10000
@@ -182,19 +208,9 @@ def Lancer():
         BitStream_Length = int(a)
     #BitStream_Length = int(Champ2.get())
     Nb_of_BitStream = int(Champ3.get())
-    BlockLength = int(Champ4.get())
-    Template = str(Champ6.get())
     
     if(BitStream_Length< 100 and algo==1):
         messagebox.showinfo("Input Size Recommendation","Choose a minimum of 100 bits")
-        
-    if(BlockLength < 20 and algo==2):
-        messagebox.showinfo("Input Size Recommendation",
-        "The block size should be higher than 20, please modify the parameters")
-    
-    if( BlockLength < 0.01*BitStream_Length and algo ==2):
-        messagebox.showinfo("Input Size Recommendation",
-      "Choose a minimum of 10% of the bitstream length for the number of blocks")
       
     if(BitStream_Length< 1000 and algo==3):
         messagebox.showinfo("Input Size Recommendation","Choose a minimum of 1000 bits") 
@@ -202,29 +218,42 @@ def Lancer():
     if(BitStream_Length< 1000000 and algo==4):
         messagebox.showinfo("Input Size Recommendation","Choose a minimum of 10^6 bits") 
     
-    if((BlockLength < 500 or BlockLength >5000 )  and algo ==2):
-        messagebox.showinfo("Input Size Recommendation","The number of blocks must be between 500 and 5000")
-    
-    if((BlockLength < BitStream_Length/100)  and algo == 5):
-        messagebox.showinfo("Input Size Recommendation","Make sure that M > n*0.01")
-    
     if((BitStream_Length < 1000000)  and algo == 6):
         messagebox.showinfo("Input Size Recommendation","Choose a minimum of 10^6 bits")
         
+    #pb.start()     
     if(algo == 1):
         f = [frequencyTest(BitStream_Length,epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)]
     if(algo == 2):
+         BlockLength = int(Champ4.get())
+         if(BlockLength < 20 and algo==2):
+             messagebox.showinfo("Input Size Recommendation",
+        "The block size should be higher than 20, please modify the parameters")
+        
+         if( BlockLength < 0.01*BitStream_Length and algo ==2):
+             messagebox.showinfo("Input Size Recommendation",
+      "Choose a minimum of 10% of the bitstream length for the number of blocks")
+      
+         if((BlockLength < 500 or BlockLength >5000 )  and algo ==2):
+             messagebox.showinfo("Input Size Recommendation","The number of blocks must be between 500 and 5000")
+      
          f = [frequencyTestBlock(BitStream_Length, BlockLength, epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)]
     if(algo == 3):
         f = [P_value(BitStream_Length,epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)] 
     if(algo == 4):
+        BlockLength = int(Champ4.get())
         f = [linearComplexityTest(BitStream_Length, BlockLength, epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)] 
     if(algo == 5):
+        BlockLength = int(Champ4.get())
+        Template = str(Champ6.get())
+        if((BlockLength < BitStream_Length/100)  and algo == 5):
+            messagebox.showinfo("Input Size Recommendation","Make sure that M > n*0.01")
         f = [NonOverlappingTemplateMatching(BitStream_Length, BlockLength, Template,  epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)] 
     if(algo == 6):
+        Template = str(Champ6.get())
         f = [OverlappingTemplateMatching(BitStream_Length, Template, epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)] 
     if(algo == 7):
-        f = [binaryMatrixTest(BitStream_Length,epsilon[i:i+BitStream_Length],M,Q) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)]
+        f = [binaryMatrixTest(BitStream_Length,epsilon[i:i+BitStream_Length],32,32) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)]
         
     if(type_graphe == 1):
         hist(f)
@@ -232,11 +261,16 @@ def Lancer():
         circ(f)
     if(type_graphe == 3):
         curve(f)
+    
+#calcul de la proportion de séquences déclarées aléatoires et de P_value_T    
     p = percent(f)*100
     pvt = P_value_T(f)
-    Label5.config(text = 'Result : Proportion = ' + str(p)  + ' % \n P_value_T = '+ str(pvt))     
-
-
+    
+    lp.set(str(p)+'%')
+    #Label5.config(text = 'Result : Proportion = ' + str(p)  + ' % \n P_value_T = '+ str(pvt))     
+    lpvt.set(str(pvt))
+    
+    #pb.stop()
 bouton_lancer = Button(fenetre, text='Lancer', command=Lancer)
 bouton_lancer.pack(side = BOTTOM, padx = 5, pady = 5)
 bouton_lancer.place(x=250,y=600)
