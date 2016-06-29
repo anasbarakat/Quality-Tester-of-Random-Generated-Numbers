@@ -287,3 +287,5 @@ bouton_lancer.place(x=250,y=600)
 
 fenetre.mainloop()
 raise Exception('exit') # pour quitter proprement 
+
+#FIN DU SCRIPT
