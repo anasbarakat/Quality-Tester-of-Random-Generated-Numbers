@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 from scipy import special
+import random
 
 #autres scripts python
 from pyzpaf import *
@@ -54,7 +55,7 @@ Label1.place(x=140, y=y1)
 Xchamps=250
 var = StringVar(fenetre)
 var.set("data")
-option = OptionMenu(fenetre, var, "data", "matlab")
+option = OptionMenu(fenetre, var, "data", "matlab","auto")
 option.pack()
 option.place(x=Xchamps,y=y1)
 
@@ -192,20 +193,27 @@ def Lancer():
     algo = int(val.get())
     file = var.get()
     RC4= vari.get()
-    print("file=",file)
-    #file = str(Champ1.get())
-    # fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/"+file+".txt", "r")
-    fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/"+ file +".txt", "r")
-    epsilon = fichier.read()[1:]
-    fichier.close()
-    if(RC4== "Avec Cryptage RC4" ):
-        #epsilon=encode(WikipediaARC4('Key').crypt(epsilon))
-        epsilon=hex2bin(str(encode(WikipediaARC4('Key').crypt(epsilon)).decode('ascii')))
+    
     a=Champ2.get()
     if( a == ""):
         BitStream_Length = 10000
     else:
         BitStream_Length = int(a)
+        
+    print("file=",file)
+    #file = str(Champ1.get())
+    # fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/"+file+".txt", "r")
+    if(file== "data" or file== "matlab"):
+        fichier = open("/Users/anasbarakat/Documents/PAF-incertitude/"+ file +".txt", "r")
+        epsilon = fichier.read()[1:]
+        fichier.close()
+    else:
+        rand= [int(2*random.random()) for i in range(BitStream_Length)]
+        epsilon = ''.join(rand)
+    if(RC4== "Avec Cryptage RC4" ):
+        #epsilon=encode(WikipediaARC4('Key').crypt(epsilon))
+        epsilon=hex2bin(str(encode(WikipediaARC4('Key').crypt(epsilon)).decode('ascii')))
+    
     #BitStream_Length = int(Champ2.get())
     Nb_of_BitStream = int(Champ3.get())
     

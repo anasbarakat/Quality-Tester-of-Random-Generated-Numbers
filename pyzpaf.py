@@ -177,7 +177,7 @@ def OverlappingTemplateMatching(n,B, e):
     N = 968
     v = [0]*(K+1)
     for i in range(N):
-        block = e[i:i+M]
+        block = e[i*M:(i+1)*M]
         cpt = 0
         for j in range(M-m+1):
             cpt += (B == block[j:j+m])
