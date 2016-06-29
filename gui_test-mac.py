@@ -244,11 +244,9 @@ def Lancer():
         BlockLength = int(Champ4.get())
         f = [linearComplexityTest(BitStream_Length, BlockLength, epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)] 
     if(algo == 5):
-        BlockLength = int(Champ4.get())
+    
         Template = str(Champ6.get())
-        if((BlockLength < BitStream_Length/100)  and algo == 5):
-            messagebox.showinfo("Input Size Recommendation","Make sure that M > n*0.01")
-        f = [NonOverlappingTemplateMatching(BitStream_Length, BlockLength, Template,  epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)] 
+        f = [NonOverlappingTemplateMatching(BitStream_Length, Template,  epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)] 
     if(algo == 6):
         Template = str(Champ6.get())
         f = [OverlappingTemplateMatching(BitStream_Length, Template, epsilon[i:i+BitStream_Length]) for i in range(0,BitStream_Length* Nb_of_BitStream,BitStream_Length)] 
