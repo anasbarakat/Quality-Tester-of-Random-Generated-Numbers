@@ -199,7 +199,7 @@ def Lancer():
         BitStream_Length = 10000
     else:
         BitStream_Length = int(a)
-        
+    Nb_of_BitStream = int(Champ3.get())
     print("file=",file)
     #file = str(Champ1.get())
     # fichier = open("C:/Users/Azoulay/Desktop/PAF-incertitude/"+file+".txt", "r")
@@ -208,14 +208,17 @@ def Lancer():
         epsilon = fichier.read()[1:]
         fichier.close()
     else:
-        rand= [int(2*random.random()) for i in range(BitStream_Length)]
+        rand= [str(int(2*random.random())) for i in range(BitStream_Length*Nb_of_BitStream)]
         epsilon = ''.join(rand)
     if(RC4== "Avec Cryptage RC4" ):
         #epsilon=encode(WikipediaARC4('Key').crypt(epsilon))
         epsilon=hex2bin(str(encode(WikipediaARC4('Key').crypt(epsilon)).decode('ascii')))
     
     #BitStream_Length = int(Champ2.get())
-    Nb_of_BitStream = int(Champ3.get())
+    
+    #dépassement de la taille du fichier 
+    if( BitStream_Length * Nb_of_BitStream > len(epsilon)):
+        messagebox.showinfo("Input Size Error", "The length of the file's sequence is not enough")
     
     if(BitStream_Length< 100 and algo==1):
         messagebox.showinfo("Input Size Recommendation","Choose a minimum of 100 bits")
